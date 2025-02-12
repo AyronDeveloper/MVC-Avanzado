@@ -1,0 +1,301 @@
+.icons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: relative;
+    margin: 20px auto;
+    box-sizing: content-box;
+}
+.icons--error{
+    border: solid 4px #F27474;
+    animation: animateErrorIcon 0.5s
+}
+.icon__error{
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+.icon__error--left{
+    display: block;
+    position: absolute;
+    top: 35px;
+    transform: rotate(45deg);
+    left: 5.5px;
+    width: 60px;
+    height: 4px;
+    background-color: #F27474;
+}
+.icon__error--right{
+    display: block;
+    position: absolute;
+    top: 35px;
+    transform: rotate(-45deg);
+    left: 5.5px;
+    width: 60px;
+    height: 4px;
+    background-color: #F27474;
+}
+@keyframes animateErrorIcon {
+  from {
+    transform: rotateX(100deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+.icons--success{
+    border: solid 4px #A5DC86;
+}
+.icons--success::before,
+.icons--success::after{
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 120px;
+    background: white;
+    border-radius: 50%;
+    transform: rotate(45deg);
+}
+.icons--success::before{
+    border-radius: 120px 0 0 120px;
+    top: -7px;
+    left: -33px;
+    transform: rotate(-45deg);
+    transform-origin: 60px 60px;
+}
+.icons--success::after{
+    border-radius: 0 120px 120px 0;
+    top: -11px;
+    left: 30px;
+    transform: rotate(-45deg);
+    transform-origin: 0px 60px;
+    animation: rotatePlaceholder 4.25s ease-in;
+  }
+  .icons--success__ring{
+  width: 80px;
+  height: 80px;
+  border: 4px solid rgba(165, 220, 134, 0.2);
+  border-radius: 50%;
+  box-sizing: content-box;
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  z-index: 2;
+  }
+  .icons--success__hide-corners {
+  width: 5px;
+  height: 89px;
+  background-color: white;
+  padding: 1px;
+  position: absolute;
+  left: 28px;
+  top: 8px;
+  z-index: 1;
+  transform: rotate(-45deg);
+}
+.icons--success__line {
+  height: 5px;
+  background-color: #A5DC86;
+  display: block;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 2;
+}
+.icons--success__line--tip {
+  width: 25px;
+  left: 14px;
+  top: 46px;
+  transform: rotate(45deg);
+  animation: animateSuccessTip 0.75s;
+}
+
+.icons--success__line--long {
+  width: 47px;
+  right: 8px;
+  top: 38px;
+  transform: rotate(-45deg);
+  animation: animateSuccessLong 0.75s;
+}
+@keyframes rotatePlaceholder {
+  0% {
+    transform: rotate(-45deg);
+  }
+  5% {
+    transform: rotate(-45deg);
+  }
+  12% {
+    transform: rotate(-405deg);
+  }
+  100% {
+    transform: rotate(-405deg);
+  }
+}
+@keyframes animateSuccessTip {
+  0% {
+    width: 0;
+    left: 1px;
+    top: 19px;
+  }
+  54% {
+    width: 0;
+    left: 1px;
+    top: 19px;
+  }
+  70% {
+    width: 50px;
+    left: -8px;
+    top: 37px;
+  }
+  84% {
+    width: 17px;
+    left: 21px;
+    top: 48px;
+  }
+  100% {
+    width: 25px;
+    left: 14px;
+    top: 45px;
+  }
+}
+@keyframes animateSuccessLong {
+  0% {
+    width: 0;
+    right: 46px;
+    top: 54px;
+  }
+  65% {
+    width: 0;
+    right: 46px;
+    top: 54px;
+  }
+  84% {
+    width: 55px;
+    right: 0px;
+    top: 35px;
+  }
+  100% {
+    width: 47px;
+    right: 8px;
+    top: 38px;
+  }
+}
+
+.icons--warning{
+    border: solid 4px #F5DC06;
+    animation: animateWarningIcon 0.5s
+}
+.icon__warning{
+    position: relative;
+    width: 70px;
+    height: 70px;
+}
+.icon__warning--triangulo{
+    position: absolute;
+    top: -5px;
+    left: 0.5px;
+    width: 0;
+    height: 0;
+    border-left: 35px solid transparent;
+    border-right: 35px solid transparent;
+    border-bottom: 60px solid #F5DC06;
+    z-index: 1;
+}
+.icon__warning--symbol{
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+.icon__warning--symbol::before{
+    display: block;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    content: "";
+    width: 5px;
+    height: 5px;
+    background-color: #fff;
+}
+.icon__warning--symbol::after{
+    display: block;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    content: "";
+    width: 5px;
+    height: 27px;
+    background-color: #fff;
+}
+@keyframes animateWarningIcon {
+  from {
+    transform: rotateY(100deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+.icons--info{
+    border: solid 4px #4EE3E8;
+    animation: animateInfoIcon 0.5s;
+}
+.icon__info{
+    position: relative;
+    width: 70px;
+    height: 70px;
+}
+.icon__info--symbol{
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+.icon__info--symbol::before{
+    display: block;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    content: "";
+    width: 5px;
+    height: 5px;
+    background-color: #4EE3E8;
+}
+.icon__info--symbol::after{
+    display: block;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    content: "";
+    width: 5px;
+    height: 35px;
+    background-color: #4EE3E8;
+}
+@keyframes animateInfoIcon {
+  from {
+    transform: rotateY(100deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
