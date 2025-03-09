@@ -1,4 +1,4 @@
 //COMPLETA DESPUES DEL / GUIANDOTE DEL .ENV CON EL ROUTER_MAIN
 const url="/"
-const url_main=`${window.location.origin}${url}`
-const url_api=`${window.location.origin}${url}api/`
+const URL_MAIN=`${window.location.origin}${url}`
+const URL_API=`${window.location.origin}${url}api/`
