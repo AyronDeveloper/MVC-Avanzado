@@ -4,7 +4,7 @@ namespace configs\Database;
 class Query{
 
     protected $table;
-    protected $query;
+    protected $query="";
     protected $values=[];
 
 
@@ -18,17 +18,17 @@ class Query{
 
 
         $num_args=func_num_args();
-        $setSelect="";
+        $selectText="";
 
 
         if($num_args>0){
             $get_args=implode(", ",func_get_args());
-            $setSelect=$get_args;
+            $selectText=$get_args;
         }else{
-            $setSelect="*";
+            $selectText="*";
         }
 
-        $self->query="SELECT $setSelect FROM {$self->table}";
+        $self->query="SELECT $selectText FROM {$self->table}";
 
         return $self;
 
@@ -58,8 +58,18 @@ class Query{
     }
     
     
-    private function verifyWhere(){
+    protected function verifyWhere(){
         return strpos($this->query,"WHERE")!==false?" AND ":" WHERE ";
+    }
+
+    protected function verifySelect(){
+
+        $posFrom=strpos($this->query,"FROM");
+
+        $selectFrom=trim(substr($this->query,6,$posFrom-6));
+
+
+        return strlen($selectFrom)==0?false:true;
     }
 
 
@@ -185,6 +195,174 @@ class Query{
     public function groupBy($column){
 
         $this->query.=" GROUP BY $column ";
+
+        return $this;
+    }
+
+
+    public function limit($limit){
+
+        $this->query.=" LIMIT $limit ";
+
+        return $this;
+    }
+
+
+    public function offset($offset){
+
+        $this->query.=" OFFSET $offset ";
+
+        return $this;
+    }
+
+
+    public function min($column,$as=null){
+
+        $qAs="";
+        if(!empty($as)){
+            $qAs=" AS $as";
+        }
+
+        $part1=substr($this->query,0,6);
+
+        $coma=$this->verifySelect()?", ":" ";
+
+        $min=" MIN($column)$qAs$coma ";
+
+        $part2=substr($this->query,6);
+
+        $this->query=$part1.$min.$part2;
+
+        return $this;
+    }
+
+
+    public function max($column,$as=null){
+
+        $qAs="";
+        if(!empty($as)){
+            $qAs=" AS $as";
+        }
+
+        $part1=substr($this->query,0,6);
+
+        $coma=$this->verifySelect()?", ":" ";
+
+        $max=" MAX($column)$qAs$coma ";
+
+        $part2=substr($this->query,6);
+
+        $this->query=$part1.$max.$part2;
+
+        return $this;
+
+    }
+    
+
+    public function count($column,$as=null){
+
+        $qAs="";
+        if(!empty($as)){
+            $qAs=" AS $as";
+        }
+
+        $part1=substr($this->query,0,6);
+
+        $coma=$this->verifySelect()?", ":" ";
+
+        $count=" COUNT($column)$qAs$coma ";
+
+        $part2=substr($this->query,6);
+
+        $this->query=$part1.$count.$part2;
+
+        return $this;
+
+    }
+
+
+    public function avg($column,$as=null){
+
+        $qAs="";
+        if(!empty($as)){
+            $qAs=" AS $as";
+        }
+
+        $part1=substr($this->query,0,6);
+
+        $coma=$this->verifySelect()?", ":" ";
+
+        $avg=" AVG($column)$qAs$coma ";
+
+        $part2=substr($this->query,6);
+
+        $this->query=$part1.$avg.$part2;
+
+        return $this;
+
+    }
+
+
+    public function sum($column,$as=null){
+
+        $qAs="";
+        if(!empty($as)){
+            $qAs=" AS $as";
+        }
+
+        $part1=substr($this->query,0,6);
+
+        $coma=$this->verifySelect()?", ":" ";
+
+        $SUM=" SUM($column)$qAs$coma ";
+
+        $part2=substr($this->query,6);
+
+        $this->query=$part1.$SUM.$part2;
+
+        return $this;
+
+    }
+
+    public function distinct(){
+
+        $part1=substr($this->query,0,6);
+
+        $distinct=" DISTINCT ";
+
+        $part2=substr($this->query,6);
+
+        $this->query=$part1.$distinct.$part2;
+
+        return $this;
+    }
+
+
+    public function having($having){
+
+        $this->query.=" HAVING $having ";
+
+        return $this;
+    }
+
+
+    public static function raw($raw){
+        $self=new static();
+
+        $calledClass=get_called_class();
+        $self->table=(new $calledClass())->table;
+        
+
+        $self->query.=" $raw ";
+
+        return $self;
+    }
+    
+    
+    public function addRaw($raw){
+        
+
+        $this->query.=" $raw ";
 
         return $this;
     }

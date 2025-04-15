@@ -9,13 +9,35 @@ class Vali{
     private static $count=0;
 
 
-    private function voidMessage($msg){
+    private static function voidMessage($msg){
         $msg=trim($msg);
 
         return empty($msg)?true:false;
     }
 
 
+    private static function generateVal($val){
+        $_SESSION["formValidation"][self::$name."Val"]=$val;
+    }
+
+    
+    private static function generateResult($result){
+        $_SESSION["formValidation"][self::$name."Result"]=$result;
+    }
+
+    
+    private static function generateMsg($message){
+        $_SESSION["formValidation"][self::$name."Men"]=$message;
+    }
+
+    /**
+     * Valida que no este vacio
+     * 
+     * @param string $name 
+     * @param string $value 
+     * @param string|null $error
+     * @param string|null $message
+     */
     public static function required($name,$value, $error=null, $message=null){
 
         self::$name="";
@@ -26,7 +48,7 @@ class Vali{
         $value=trim($value);
         self::$name=$name;
 
-        if(!empty($value)){
+        if($value!==null || $value!==""){
             self::$var=$value;
             self::$message=self::voidMessage($message)?"valited":$message;
         }else{
@@ -34,12 +56,13 @@ class Vali{
             self::$message=self::voidMessage($error)?"required error":$error;
         }
 
-        $_SESSION["formValidation"][self::$name]=self::$var;
-        $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-        $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+        self::generateVal(self::$var);
+        self::generateResult(self::$result);
+        self::generateMsg(self::$message);
 
         return new self;
     }
+    
 
     public static function isString($error=null,$message=null){
 
@@ -53,13 +76,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"isString error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function isNumber($error=null,$message=null){
 
@@ -72,13 +96,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"isNumber error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function isInteger($error=null,$message=null){
         
@@ -91,13 +116,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"isInteger error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function isFloat($error=null,$message=null){
         
@@ -111,13 +137,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"isFloat error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function lenMin($min,$error=null,$message=null){
         
@@ -130,13 +157,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"lenMin error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function lenMax($max,$error=null,$message=null){
         
@@ -149,13 +177,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"lenMax error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function differentTo($different,$error=null,$message=null){
         
@@ -169,13 +198,14 @@ class Vali{
                 self::$message=self::voidMessage($error)?"differentTo error":$error;
             }
 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function equalTo($equal,$error=null,$message=null){
         
@@ -188,14 +218,15 @@ class Vali{
                 self::$result=false;
                 self::$message=self::voidMessage($error)?"equalTo error":$error;
             }
-            
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function isEmail($error=null,$message=null){
         
@@ -207,14 +238,15 @@ class Vali{
                 self::$result=false;
                 self::$message=self::voidMessage($error)?"isEmail error":$error;
             }
-            
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
     }
+
 
     public static function validateDate($error=null,$message=null){
         
@@ -247,10 +279,10 @@ class Vali{
                 self::$result=false;
                 self::$message=self::voidMessage($error)?"validateDate Error":$error;
             }
-            
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
@@ -294,10 +326,10 @@ class Vali{
                 self::$var="";
                 self::$message=self::voidMessage($error)?"notUse Error":$error;
             }
-                
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
@@ -314,10 +346,10 @@ class Vali{
                 self::$result=false;
                 self::$message=self::voidMessage($error)?"isColor error":$error;
             }
-            
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
 
         return new self;
@@ -344,9 +376,9 @@ class Vali{
             self::$message=self::voidMessage($error)?"isBoolean error":$error;
         }
 
-        $_SESSION["formValidation"][self::$name]=self::$var;
-        $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-        $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+        self::generateVal(self::$var);
+        self::generateResult(self::$result);
+        self::generateMsg(self::$message);
 
         return new self;
     }
@@ -366,10 +398,10 @@ class Vali{
             self::$result=false;
             self::$message=self::voidMessage($error)?"isArray error":$error;
         }
-        
-        $_SESSION["formValidation"][self::$name]=self::$var;
-        $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-        $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+        self::generateVal(self::$var);
+        self::generateResult(self::$result);
+        self::generateMsg(self::$message);
 
         return new self;
     }
@@ -390,10 +422,11 @@ class Vali{
             self::$result=false;
             self::$message=self::voidMessage($error)?"uploadFile Error":$error;
         }
-            
-        $_SESSION["formValidation"][self::$name]=self::$var;
-        $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-        $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+        self::generateVal(self::$var);
+        self::generateResult(self::$result);
+        self::generateMsg(self::$message);
+
         return new self;
     }
 
@@ -403,18 +436,17 @@ class Vali{
 
             $byte=1024;
 
-            if($UA=="KB"){
+            if(strtoupper($UA)=="KB"){
                 $sizeFile=self::$var["size"]/$byte;
             }elseif($UA=="byte"){
                 $sizeFile=self::$var["size"];
             }else{
                 self::$result=false;
                 self::$message="Error UA";
-                
-                
-                $_SESSION["formValidation"][self::$name]="";
-                $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-                $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+                self::generateVal(self::$var);
+                self::generateResult(self::$result);
+                self::generateMsg(self::$message);
                 
                 return new self;
             }
@@ -439,9 +471,9 @@ class Vali{
                 self::$message=self::voidMessage($error)?"sizeFile Error":$error;
             }
                 
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
         return new self;
     }
@@ -461,34 +493,43 @@ class Vali{
                 self::$result=false;
                 self::$message=self::voidMessage($error)?"typeFile Error":$error;
             }
-                
-            $_SESSION["formValidation"][self::$name]=self::$var;
-            $_SESSION["formValidation"][self::$name."Result"]=self::$result;
-            $_SESSION["formValidation"][self::$name."Men"]=self::$message;
+
+            self::generateVal(self::$var);
+            self::generateResult(self::$result);
+            self::generateMsg(self::$message);
         }
         return new self;
     }
     
-    
-    
-    
-    //create
-    public static function create($name,$result,$valor=null,$message=null){
-        $_SESSION["formValidation"][$name]=$valor;
+    /**
+     * Esta funcion es para poder validar algo que Vali PHP no pueda hacer, 
+     * pero asu vez poder utilizar las funciones como 
+     * value()
+     * success()
+     * failed()
+     * showMessage()
+     * @param string $name 
+     * @param boolean $result
+     * @param string|null|any $valor
+     * @param string|null $message
+     */
+    public static function custom($name,$result,$valor=null,$message=null){
+        $_SESSION["formValidation"][$name."Val"]=$valor;
         $_SESSION["formValidation"][$name."Result"]=$result;
         
         if($message!=null){
             $_SESSION["formValidation"][$name."Men"]=$message;
         }
+
+        return new self;
     }
 
 
-
-    public static function results($value=null){
+    public static function verify($value=null){
         if(self::$result==false){
             self::$count++;
         }
-        if($value=="var"){
+        if($value=="val"){
             return self::$var;
         }
         elseif($value=="result"){
@@ -501,6 +542,7 @@ class Vali{
             return array("var"=>self::$var,"result"=>self::$result,"message"=>self::$message);
         }
     }
+
 
     public static function errors(){
         $result=false;
@@ -515,12 +557,16 @@ class Vali{
     public static function clear(){
         unset($_SESSION["formValidation"]);
     }
+
+
     //clearSelect
     public static function clearSelect($name){
         unset($_SESSION["formValidation"][$name]);
         unset($_SESSION["formValidation"][$name."Men"]);
         unset($_SESSION["formValidation"][$name."Result"]);
     }
+
+
     //clearExcep
     public static function clearExcep($name){
         foreach($_SESSION["formValidation"] as $session=>$valor){
@@ -532,21 +578,25 @@ class Vali{
         }
     }
 
+
     public static function success($name){
         if(isset($_SESSION["formValidation"][$name."Result"]) && $_SESSION["formValidation"][$name."Result"]==true){
             return true;
         }
     }
     
+
     public static function failed($name){
         if(isset($_SESSION["formValidation"][$name."Result"]) && $_SESSION["formValidation"][$name."Result"]==false){
             return true;
         }
     }
+
+
     //value
     public static function value($name,$aditional=null){
-        if(isset($_SESSION["formValidation"][$name])){
-            return $_SESSION["formValidation"][$name];
+        if(isset($_SESSION["formValidation"][$name."Val"])){
+            return $_SESSION["formValidation"][$name."Val"];
         }
 
         if(!empty($aditional)){
@@ -555,11 +605,13 @@ class Vali{
 
     }
 
+
     public static function valueArray($name,$indice){
-        if(isset($_SESSION["formValidation"][$name]) && $_SESSION["formValidation"][$name]!=false){
-            return $_SESSION["formValidation"][$name][$indice];
+        if(isset($_SESSION["formValidation"][$name."Val"]) && $_SESSION["formValidation"][$name."Val"]!=false){
+            return $_SESSION["formValidation"][$name."Val"][$indice];
         }
     }
+
 
     public static function showMessage($name){
         if(isset($_SESSION["formValidation"][$name."Men"])){
