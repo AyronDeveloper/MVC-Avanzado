@@ -3,19 +3,21 @@ namespace configs\Router;
 
 class Navigate{
     private static $controller;
-    private static $statusGlobal=true;
+    protected static $global=true;
+    private static $status=["mode"=>"route","status"=>true];
+    protected static $bearerActive=false;
 
-    private static function url(){
+    protected static function url(){
         
-        $protocol=isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']=='on'?'https':'http';
+        $protocol=isset($_SERVER["HTTPS"])&&$_SERVER["HTTPS"]=="on"?"https":"http";
 
-        $host=$_SERVER['HTTP_HOST'];
+        $host=$_SERVER["HTTP_HOST"];
 
-        $uri=$_SERVER['REQUEST_URI'];
+        $uri=$_SERVER["REQUEST_URI"];
 
-        $url=$protocol.'://'.$host."$_ENV[ROUTER_MAIN]";
+        $url=$protocol."://".$host."$_ENV[ROUTER_MAIN]";
 
-        $completeURL=$protocol.'://'.$host.$uri;
+        $completeURL=$protocol."://".$host.$uri;
 
         $url_len=strlen($url);
 
@@ -24,16 +26,45 @@ class Navigate{
         return $url_next;
     }
 
-    public static function setStatusGlobal($status){
-        self::$statusGlobal=$status;
+    protected static function isApi(){
+        return str_starts_with(self::url(),"api/") || str_starts_with(self::url(),"api");
     }
 
-    public static function getStatusGlobal(){
-        return self::$statusGlobal;
+    protected static function headers(){
+        $result=true;
+
+        if(self::$bearerActive){
+            $bearer=getallheaders();
+
+            if(isset($bearer["Authorization"]) && preg_match('/^Bearer\s+(\S+)$/i',$bearer["Authorization"],$matches)){
+
+                if($matches[1]==$_ENV["BEARER"]){
+                    $result=true;
+                }else{
+                    echo json_encode(["result"=>false,"message"=>"Denegado"]);
+                    $result=false;
+                }
+            }else{
+                echo json_encode(["result"=>false,"message"=>"No tiene autorizacion"]);
+                $result=false;
+            }
+            
+        }
+
+        return $result;
+    }
+
+    public static function getStatusGlobal($param=null){
+        if(!empty($param)){
+            return self::$status[$param];
+        }else{
+            return self::$status;
+        }
     }
 
     public static function navigate($link, $method){
-        if(!self::$statusGlobal){
+
+        if(self::$status["status"]==false){
             return;
         }
 
@@ -54,24 +85,34 @@ class Navigate{
         $param='#^'.str_replace('/','\/', $paramObliga).'(\/)?$#';
 
         if(preg_match($param,$url_next,$matches)){
-            array_shift($matches);
 
-            $deleteSlash=array_search("/",$matches);
-            if($deleteSlash!==false){
-                array_splice($matches,$deleteSlash,1);
+            self::$status=["status"=>false];
+
+            if(self::headers()){
+
+                array_shift($matches);
+
+                $deleteSlash=array_search("/",$matches);
+                if($deleteSlash!==false){
+                    array_splice($matches,$deleteSlash,1);
+                }
+
+
+                $nameMetodo=$method;
+        
+                $controlador=self::$controller;
+                call_user_func_array([$controlador,$nameMetodo],$matches);
             }
-
-            self::$statusGlobal=false;
-
-            $nameMetodo=$method;
-    
-            $controlador=self::$controller;
-            call_user_func_array([$controlador,$nameMetodo],$matches);
+        
         }
+
     
     }
 
     public static function controller($controller){
+
+        self::$bearerActive=false;
+
         self::$controller=new $controller();
 
         return new self;
@@ -80,6 +121,10 @@ class Navigate{
     public function group($function){
         $function();
     }
-}
 
+    public static function bearer(){
+        self::$bearerActive=true;
+        return new self;
+    }
+}
 ?>
