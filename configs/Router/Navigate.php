@@ -34,9 +34,9 @@ class Navigate{
         $result=true;
 
         if(self::$bearerActive){
-            $bearer=getallheaders();
+            $bearer=$_SERVER;
 
-            if(isset($bearer["Authorization"]) && preg_match('/^Bearer\s+(\S+)$/i',$bearer["Authorization"],$matches)){
+            if(isset($bearer["HTTP_AUTHORIZATION"]) && preg_match('/^Bearer\s+(\S+)$/i',$bearer["HTTP_AUTHORIZATION"],$matches)){
 
                 if($matches[1]==$_ENV["BEARER"]){
                     $result=true;

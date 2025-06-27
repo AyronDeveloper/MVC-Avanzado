@@ -2,11 +2,11 @@
 namespace configs\Handle;
 
 class Request{
-    private static $parametersGet;
-    private static $parametersPost;
-    private static $parametersPut;
-    private static $parametersDelete;
-    private static $parametersFiles;
+    private static $parametersGet=[];
+    private static $parametersPost=[];
+    private static $parametersPut=[];
+    private static $parametersDelete=[];
+    private static $parametersFiles=[];
 
 
     public static function get($param=null){
@@ -25,12 +25,28 @@ class Request{
 
     public static function post($param=null){
         
-        $request_method=$_SERVER["REQUEST_METHOD"];
+        $request_method=$_SERVER["REQUEST_METHOD"];    
 
         if($request_method=="POST"){
 
             if(!array_key_exists("PUT",$_POST) && !array_key_exists("DELETE",$_POST)){
-                self::$parametersPost=$_POST;
+
+                if($_SERVER["CONTENT_TYPE"]=="application/json"){
+
+                    $post=json_decode(file_get_contents("php://input"),true);
+
+                }elseif($_SERVER["CONTENT_TYPE"]=="application/x-www-form-urlencoded"){
+
+                    parse_str(file_get_contents("php://input"), $post);
+
+                }elseif(strpos($_SERVER["CONTENT_TYPE"],"multipart/form-data")!==false){
+
+                    $post=$_POST;
+
+                }
+
+
+                self::$parametersPost=$post;
     
                 if(empty($param)){
                     return self::$parametersPost;
@@ -47,14 +63,18 @@ class Request{
         
         if($request_method=="PUT"){
 
-            $_PUT=json_decode(file_get_contents("php://input"),true);
-            self::$parametersPut=$_PUT;
-    
-            if(empty($param)){
-                return self::$parametersPut;
+            if($_SERVER["CONTENT_TYPE"]=="application/json"){
+
+                $_PUT=json_decode(file_get_contents("php://input"),true);
+
+            }elseif($_SERVER["CONTENT_TYPE"]=="application/x-www-form-urlencoded"){
+
+                parse_str(file_get_contents("php://input"), $_PUT);
             }else{
-                return self::$parametersPut[$param];
+                $_PUT=[];
             }
+            
+            self::$parametersPut=$_PUT;
 
         }elseif($request_method=="POST" && isset($_POST["PUT"]) && $_POST["PUT"]=="_PUT"){
 
@@ -62,13 +82,13 @@ class Request{
             unset($put["PUT"]);
 
             self::$parametersPut=$put;
-    
-            if(empty($param)){
-                return self::$parametersPut;
-            }else{
-                return self::$parametersPut[$param];
-            }
+        }
 
+
+        if(empty($param)){
+            return self::$parametersPut;
+        }else{
+            return self::$parametersPut[$param];
         }
         
     }
@@ -77,14 +97,19 @@ class Request{
         $request_method=$_SERVER["REQUEST_METHOD"];
         
         if($request_method=="DELETE"){
-            $_DELETE=json_decode(file_get_contents("php://input"),true);
-            self::$parametersDelete=$_DELETE;
-    
-            if(empty($param)){
-                return self::$parametersDelete;
+
+            if($_SERVER["CONTENT_TYPE"]=="application/json"){
+
+                $_DELETE=json_decode(file_get_contents("php://input"),true);
+
+            }elseif($_SERVER["CONTENT_TYPE"]=="application/x-www-form-urlencoded"){
+
+                parse_str(file_get_contents("php://input"), $_DELETE);
             }else{
-                return self::$parametersDelete[$param];
+                $_DELETE=[];
             }
+            
+            self::$parametersDelete=$_DELETE;
 
         }elseif($request_method=="POST" && isset($_POST["DELETE"]) && $_POST["DELETE"]=="_DELETE"){
 
@@ -92,13 +117,12 @@ class Request{
             unset($delete["DELETE"]);
 
             self::$parametersDelete=$delete;
-
-            if(empty($param)){
-                return self::$parametersDelete;
-            }else{
-                return self::$parametersDelete[$param];
-            }
-
+        }
+    
+        if(empty($param)){
+            return self::$parametersDelete;
+        }else{
+            return self::$parametersDelete[$param];
         }
     }
 
