@@ -10,6 +10,7 @@ class Qmysql extends Query{
     protected $table;
     private static $connection=null;
     private static $transaction=false;
+    private static $idTable=null;
 
     
     private static function getConection(){
@@ -67,7 +68,6 @@ class Qmysql extends Query{
 
 
         return $data;
-        
     }
 
 
@@ -85,7 +85,11 @@ class Qmysql extends Query{
 
 
         return $data;
-        
+    }
+
+
+    public static function lastId(){
+        return self::$idTable;
     }
 
 
@@ -98,14 +102,24 @@ class Qmysql extends Query{
                 $result->bindValue($key+1,$value,$value===null?PDO::PARAM_NULL:PDO::PARAM_STMT);
             }
             
-            return $result->execute();
+
+            if($result->execute()){
+
+                if(stripos(trim($this->query),"insert")===0){
+                    self::$idTable=self::getConection()->lastInsertId();
+                }
+                    
+                return true;
+            }else{
+                return false;
+            }
+
         }catch(PDOException $e){
             error_log("Error: ".$e->getMessage());
+
             return false;
         }
 
     }
-
-
 }
 ?>
