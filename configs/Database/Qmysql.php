@@ -11,6 +11,7 @@ class Qmysql extends Query{
     private static $connection=null;
     private static $transaction=false;
     private static $idTable=null;
+    private static $erroSQL="";
 
     
     private static function getConection(){
@@ -92,6 +93,10 @@ class Qmysql extends Query{
         return self::$idTable;
     }
 
+    public static function msgError(){
+        return self::$erroSQL;
+    }
+
 
     public function run(){
 
@@ -115,11 +120,14 @@ class Qmysql extends Query{
             }
 
         }catch(PDOException $e){
-            error_log("Error: ".$e->getMessage());
+
+            self::$erroSQL=$e->getMessage();
 
             return false;
         }
 
     }
+
+
 }
 ?>
