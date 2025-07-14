@@ -97,6 +97,14 @@ class Navigate{
                     array_splice($matches,$deleteSlash,1);
                 }
 
+                
+                foreach($matches as $i=>$val){
+                    if(is_string($val)){
+                        $val=urldecode($val);
+                    }
+                    $matches[$i]=$val;
+                }
+
 
                 $nameMetodo=$method;
         

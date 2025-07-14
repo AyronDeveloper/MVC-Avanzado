@@ -56,6 +56,7 @@ class Qmysql extends Query{
 
 
     public function get(){
+        $this->clearValues();
 
         $dataQuery=self::getConection()->prepare($this->query);
 
@@ -73,6 +74,7 @@ class Qmysql extends Query{
 
 
     public function first(){
+        $this->clearValues();
         
         $dataQuery=self::getConection()->prepare($this->query);
 
@@ -99,6 +101,7 @@ class Qmysql extends Query{
 
 
     public function run(){
+        $this->clearValues();
 
         try{
             $result=self::getConection()->prepare($this->query);
