@@ -17,9 +17,8 @@ class Qmysql extends Query{
     private static function getConection(){
 
         if(self::$connection===null){
-            self::$connection=new PDO("mysql:host=$_ENV[MYSQL_HOST]; dbname=$_ENV[MYSQL_DBNAME]; ",$_ENV["MYSQL_USER"], $_ENV["MYSQL_PASSWORD"]);
-            self::$connection->exec("SET NAMES 'utf8'");
-
+            self::$connection=new PDO("mysql:host=$_ENV[MYSQL_HOST]; dbname=$_ENV[MYSQL_DBNAME]; ",$_ENV["MYSQL_USER"],$_ENV["MYSQL_PASSWORD"]);
+            self::$connection->exec("SET NAMES 'utf8mb4' COLLATE utf8mb4_unicode_ci");
         }
 
         return self::$connection;
@@ -61,7 +60,7 @@ class Qmysql extends Query{
         $dataQuery=self::getConection()->prepare($this->query);
 
         foreach($this->values as $key=>$value){
-            $dataQuery->bindValue($key+1,$value,$value===null?PDO::PARAM_NULL:PDO::PARAM_STMT);
+            $dataQuery->bindValue($key+1,$value,$value===null?PDO::PARAM_NULL:PDO::PARAM_STR);
         }
         
         $dataQuery->execute();
@@ -79,7 +78,7 @@ class Qmysql extends Query{
         $dataQuery=self::getConection()->prepare($this->query);
 
         foreach($this->values as $key=>$value){
-            $dataQuery->bindValue($key+1,$value,$value===null?PDO::PARAM_NULL:PDO::PARAM_STMT);
+            $dataQuery->bindValue($key+1,$value,$value===null?PDO::PARAM_NULL:PDO::PARAM_STR);
         }
 
         $dataQuery->execute();

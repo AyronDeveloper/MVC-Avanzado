@@ -9,15 +9,14 @@ class Query{
 
 
     protected function clearValues(){
-    foreach($this->values as $i=>$val){
-        if(is_string($val)){
-            $val=urldecode($val);
-            $val=trim($val);
-            $val=preg_replace('/\s+/'," ",$val);
+        foreach($this->values as $i=>$val){
+            if(is_string($val)){
+                $val=trim($val);
+                $val=preg_replace('/\s+/'," ",$val);
+            }
+            $this->values[$i]=$val;
         }
-        $this->values[$i]=$val;
     }
-}
 
 
     public static function select(){
