@@ -23,26 +23,35 @@ class Query{
 
         $self=new static();
 
-
         $calledClass=get_called_class();
         $self->table=(new $calledClass())->table;
 
+        $args=func_get_args();
+        $columns=[];
 
-        $num_args=func_num_args();
-        $selectText="";
-
-
-        if($num_args>0){
-            $get_args=implode(", ",func_get_args());
-            $selectText=$get_args;
-        }else{
-            $selectText="*";
+        foreach($args as $ar){
+            if(is_array($ar)){
+                foreach($ar as $table=>$cols){
+                    if(is_array($cols)){
+                        foreach($cols as $cl){
+                            if($cl=="*"){
+                                $columns[]="$table.*";
+                            }elseif(!empty($cl)){
+                                $columns[]="$table.$cl";
+                            }
+                        }
+                    }
+                }
+            }else{
+                $columns[]=$ar;
+            }
         }
 
+        $selectText=empty($columns)?"* ":implode(", ",$columns);
+        
         $self->query="SELECT $selectText FROM {$self->table}";
 
         return $self;
-
     }
 
 
@@ -352,6 +361,14 @@ class Query{
     public function having($having){
 
         $this->query.=" HAVING $having ";
+
+        return $this;
+    }
+
+
+    public function forUpdate(){
+
+        $this->query.=" FOR UPDATE ";
 
         return $this;
     }
