@@ -25,11 +25,6 @@ function api($ruta=""){
     return route()."api/".$ruta;
 }
 
-function redirection($ruta){
-    header("Location: ".route().$ruta);
-    exit;
-}
-
 
 function fixURL(){
     $protocol=isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']=='on'?'https':'http';

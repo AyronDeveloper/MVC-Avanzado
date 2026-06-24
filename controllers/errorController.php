@@ -1,7 +1,7 @@
 <?php
 namespace controllers;
 
-class errorController{
+class ErrorController{
 
     public static function web(){
         require_once("./views/errorView/index.php");

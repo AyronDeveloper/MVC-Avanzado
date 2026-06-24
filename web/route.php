@@ -1,8 +1,8 @@
 <?php
 use configs\Router\Route;
-use controllers\homeController;
+use controllers\HomeController;
 
-Route::controller(homeController::class)->group(function(){
+Route::controller(HomeController::class)->group(function(){
     Route::get("","index");
 });
 ?>

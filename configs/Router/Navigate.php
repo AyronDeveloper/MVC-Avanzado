@@ -1,12 +1,15 @@
 <?php
 namespace configs\Router;
 
-class Navigate{
+use configs\Router\NaviMiddleware;
+
+class Navigate extends NaviMiddleware{
+
     private static $controller;
     protected static $global=true;
-    private static $status=["mode"=>"route","status"=>true];
-    protected static $bearerActive=false;
 
+
+    
     protected static function url(){
         
         $protocol=isset($_SERVER["HTTPS"])&&$_SERVER["HTTPS"]=="on"?"https":"http";
@@ -26,52 +29,56 @@ class Navigate{
         return $url_next;
     }
 
+
+
     protected static function isApi(){
         return str_starts_with(self::url(),"api/") || str_starts_with(self::url(),"api");
     }
 
+
+
     protected static function headers(){
         $result=true;
 
-        if(self::$bearerActive){
-            $bearer=$_SERVER;
 
-            if(isset($bearer["HTTP_AUTHORIZATION"]) && preg_match('/^Bearer\s+(\S+)$/i',$bearer["HTTP_AUTHORIZATION"],$matches)){
+        foreach(self::$status_middleware as $middleware){
 
-                if($matches[1]==$_ENV["BEARER"]){
-                    $result=true;
-                }else{
-                    echo json_encode(["result"=>false,"message"=>"Denegado"]);
-                    $result=false;
-                }
-            }else{
-                echo json_encode(["result"=>false,"message"=>"No tiene autorizacion"]);
-                $result=false;
+            if($middleware["active"]){
+
+                if(!$middleware["status"]){ 
+
+                    echo json_encode($middleware["response"]);
+                    return false;
+                };
             }
-            
         }
+
 
         return $result;
     }
 
-    public static function getStatusGlobal($param=null){
-        if(!empty($param)){
-            return self::$status[$param];
-        }else{
-            return self::$status;
-        }
-    }
 
-    public static function navigate($link, $method){
 
-        if(self::$status["status"]==false){
+    public static function navigate($link,$method){
+
+        /**
+         * VALIDA SI YA ENCONTRO LA URL REQUERIDA
+         */
+        if(isset($_SESSION["navigate"]["route_found"]) && $_SESSION["navigate"]["route_found"]){
             return;
         }
 
+        /**
+         * RECUPERA LA URL ACTUAL DE LA PAGINA
+         */
         $url_next=self::url();
 
+
+
         $existeHttps=strpos($url_next,"?");
-    
+        /**
+         * VALIDA SI LA URL TIENE PARAMETROS
+         */
         if($existeHttps!==false){
             $url_next=substr($url_next,0,$existeHttps);
         }
@@ -86,8 +93,16 @@ class Navigate{
 
         if(preg_match($param,$url_next,$matches)){
 
-            self::$status=["status"=>false];
+            /**
+             * SI ENCUENTRA LA URL SOLICITADA
+             * GENERA UNA SESION PARA QUE NO SIGA EJECUTANDO EL RESTO DE CODIGO
+             */
+            $_SESSION["navigate"]["route_found"]=true;
 
+
+            /**
+             * VERIFICA QUE LOS MIDDLEWARE ESTEN CORRECTAMENTE
+             */
             if(self::headers()){
 
                 array_shift($matches);
@@ -117,21 +132,43 @@ class Navigate{
     
     }
 
+
+
     public static function controller($controller){
 
-        self::$bearerActive=false;
+        self::$status_middleware=[
+            "bearer"=>[
+                "active"=>false,
+                "status"=>false,
+                "response"=>[]
+            ],
+            "auth"=>[
+                "active"=>false,
+                "status"=>false,
+                "response"=>[]
+            ]
+        ];
 
         self::$controller=new $controller();
 
         return new self;
     }
 
+
+
     public function group($function){
         $function();
     }
+    
 
-    public static function bearer(){
-        self::$bearerActive=true;
+
+    public static function middleware($middleware=[]){
+
+        foreach($middleware as $middle){
+
+            self::$middle();
+        } 
+
         return new self;
     }
 }

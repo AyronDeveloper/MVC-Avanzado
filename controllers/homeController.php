@@ -1,7 +1,7 @@
 <?php
 namespace controllers;
 
-class homeController{
+class HomeController{
 
     public function index(){
         require_once("./views/homeView/index.php");

@@ -1,27 +1,23 @@
 <?php
 namespace configs\Router;
 
-use configs\Router\Navigate;
-use controllers\errorController;
+use controllers\ErrorController;
 
-class ErrorNavigate extends Navigate{
-    
-    public static function error($redirection=null){
-        $status=self::getStatusGlobal("status");
+class ErrorNavigate{
 
-        if($status){
-            if(self::isApi()){
-                errorController::api();
-            }else{
-                if(!empty($redirection)){
-                    header("Location: $redirection",true,301);
-                }else{
-                    errorController::web();
-                }
-                
+    public static function error(){
+        if(!isset($_SESSION["navigate"]["route_found"]) || !$_SESSION["navigate"]["route_found"]){
+
+            if($_SESSION["navigate"]["type_request"]=="api"){
+                ErrorController::api();
             }
+            elseif($_SESSION["navigate"]["type_request"]=="web"){
+                ErrorController::web();
+            }
+
         }
 
+        unset($_SESSION["navigate"]["route_found"]);
     }
 }
 ?>

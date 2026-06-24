@@ -8,6 +8,8 @@ use PDOException;
 class Qmysql extends Query{
 
     protected $table;
+    protected $data;
+    protected $config_after=[];
     private static $connection=null;
     private static $transaction=false;
     private static $idTable=null;
@@ -49,7 +51,7 @@ class Qmysql extends Query{
     }
 
     
-    public function viewQuery(){
+    public function view(){
         return $this->query;
     }
 
@@ -64,11 +66,19 @@ class Qmysql extends Query{
         }
         
         $dataQuery->execute();
+        $this->data=$dataQuery->fetchAll(PDO::FETCH_ASSOC);
 
-        $data=$dataQuery->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach($this->config_after as $config){
+            if(method_exists($this,$config)){
+                foreach($this->data as &$data){
+                    $data=$this->$config($data);
+                }
+            }
+        }
 
 
-        return $data;
+        return $this->data;
     }
 
 
@@ -82,11 +92,34 @@ class Qmysql extends Query{
         }
 
         $dataQuery->execute();
+        $this->data=$dataQuery->fetch(PDO::FETCH_ASSOC);
 
-        $data=$dataQuery->fetch(PDO::FETCH_ASSOC);
+
+        if(is_array($this->data)){
+            foreach($this->config_after as $config){
+                if(method_exists($this,$config)){
+                    $this->data=$this->$config($this->data);
+                }
+            }
+        }
 
 
-        return $data;
+        return $this->data;
+    }
+
+    public function value(){
+        $this->clearValues();
+        
+        $dataQuery=self::getConection()->prepare($this->query);
+
+        foreach($this->values as $key=>$value){
+            $dataQuery->bindValue($key+1,$value,$value===null?PDO::PARAM_NULL:PDO::PARAM_STR);
+        }
+
+        $dataQuery->execute();
+        $data=$dataQuery->fetchColumn();
+
+        return $data!==false?$data:null;
     }
 
 

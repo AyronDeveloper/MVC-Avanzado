@@ -1,7 +1,7 @@
 <?php
-namespace controllers;
+namespace controllers\Api;
 
-class apiController{
+class ApiController{
 
     public function index(){
         echo json_encode([]);

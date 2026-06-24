@@ -20,7 +20,6 @@ class Query{
 
 
     public static function select(){
-
         $self=new static();
 
         $calledClass=get_called_class();
@@ -34,7 +33,14 @@ class Query{
                 foreach($ar as $table=>$cols){
                     if(is_array($cols)){
                         foreach($cols as $cl){
-                            if($cl=="*"){
+                            if(is_array($cl)){// ES UNA FUNCION
+                                $funcion=strtoupper($cl[0]); // NOMBRE FUNCION
+                                $columna=$cl[1]; // COLUMNA
+                                $alias=$cl[2]; // ALIAS
+
+                                $columns[]="$funcion( $table.$columna ) AS $alias";
+
+                            }elseif($cl=="*"){
                                 $columns[]="$table.*";
                             }elseif(!empty($cl)){
                                 $columns[]="$table.$cl";
@@ -212,26 +218,20 @@ class Query{
     }
 
 
-    public function groupBy($column){
-
-        $this->query.=" GROUP BY $column ";
-
+    public function groupBy(...$columns){
+        $this->query.=" GROUP BY ".implode(", ",$columns);
         return $this;
     }
 
 
     public function limit($limit){
-
         $this->query.=" LIMIT $limit ";
-
         return $this;
     }
 
 
     public function offset($offset){
-
         $this->query.=" OFFSET $offset ";
-
         return $this;
     }
 

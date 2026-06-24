@@ -1,8 +1,8 @@
 <?php
 use configs\Router\Api;
-use controllers\apiController;
+use controllers\Api\ApiController;
 
-Api::controller(apiController::class)->group(function(){
+Api::controller(ApiController::class)->group(function(){
     Api::get("","index");
 });
 ?>

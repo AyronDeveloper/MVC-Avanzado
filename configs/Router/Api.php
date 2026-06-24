@@ -4,9 +4,18 @@ namespace configs\Router;
 use configs\Router\Navigate;
 
 class Api extends Navigate{
+
+    private static function init(){
+
+        $_SESSION["navigate"]["type_request"]="api";
+    }
+
+
     
     public static function get($link,$method){
         $request_method=$_SERVER["REQUEST_METHOD"];
+
+        self::init();
 
         if($request_method=="GET"){
             $link=$link==""?"api":"api/$link";
@@ -17,6 +26,8 @@ class Api extends Navigate{
 
     public static function post($link,$method){
         $request_method=$_SERVER["REQUEST_METHOD"];
+        
+        self::init();
 
         if($request_method=="POST"){
             $link=$link==""?"api":"api/$link";
@@ -27,6 +38,8 @@ class Api extends Navigate{
     public static function put($link,$method){
         $request_method=$_SERVER["REQUEST_METHOD"];
 
+        self::init();
+
         if($request_method=="PUT"){
             $link=$link==""?"api":"api/$link";
             self::navigate($link,$method);
@@ -36,6 +49,8 @@ class Api extends Navigate{
     public static function delete($link,$method){
         $request_method=$_SERVER["REQUEST_METHOD"];
 
+        self::init();
+
         if($request_method=="DELETE"){
             $link=$link==""?"api":"api/$link";
             self::navigate($link,$method);
@@ -44,6 +59,8 @@ class Api extends Navigate{
 
     public static function combo($request,$link,$method){
         $request_method=$_SERVER["REQUEST_METHOD"];
+
+        self::init();
 
         foreach($request as $res){
             $res=strtoupper($res);
